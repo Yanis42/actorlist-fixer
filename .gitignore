@@ -1,3 +1,7 @@
-*.xml
+# Project files
 __pycache__/
 .vscode/
+
+# Per-user configuration
+*.xml
+*.txt

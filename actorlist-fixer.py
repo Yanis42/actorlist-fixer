@@ -53,49 +53,49 @@ for i in range(len(objectID)):
 
 # Generate the properties lists
 listProp, listProp2, listPropNames, listPropTarget = [], [], [], []
-i = j = 0
-# f = open('propDebug.txt', 'w')
-for actorNode in root:
-    # Process Properties
-    listProp.append(actorNode.get('Properties'))
-    if i < len(listProp):
-        if listProp[i] is not None:
-            strProp = f"{listProp[i]}"
+def processProperties(attr):
+    global root
+    i = j = 0
+    for actorNode in root:
+        if attr != 'Properties':
+            global listPropNames
+            global listPropTarget
 
-            if strProp.find(',') != -1:
-                tmp = strProp.split(',')
-                for j in range(len(tmp)):
-                    tmp[j] = '0x' + tmp[j]
-                listProp2.append(tmp)
-            else: listProp2.append('0x' + strProp)
-        else:
-            listProp2.append('0x0000')
+            prop = actorNode.get(attr)
+            if prop is not None:
+                if prop.find(',') == -1:
+                    if attr == 'PropertiesNames': listPropNames.append(prop)
+                    if attr == 'PropertiesTarget': listPropTarget.append(prop)
+                else:
+                    tmp = prop.split(',')
+                    if attr == 'PropertiesNames': listPropNames.append(tmp)
+                    if attr == 'PropertiesTarget': listPropTarget.append(tmp)
+            else:
+                if attr == 'PropertiesNames': listPropNames.append("None")
+                if attr == 'PropertiesTarget': listPropTarget.append("None")
 
-    # Process PropertiesNames
-    propNames = actorNode.get('PropertiesNames')
-    if propNames is not None:
-        if propNames.find(',') == -1:
-            listPropNames.append(propNames)
-        else:
-            tmp = propNames.split(',')
-            listPropNames.append(tmp)
-    else:
-        listPropNames.append("None")
+        elif attr == 'Properties':
+            global listProp
+            global listProp2
 
-    # Process PropertiesNames
-    propTarget = actorNode.get('PropertiesTarget')
-    if propTarget is not None:
-        if propTarget.find(',') == -1:
-            listPropTarget.append(propTarget)
-        else:
-            tmp = propTarget.split(',')
-            listPropTarget.append(tmp)
-    else:
-        listPropTarget.append("None")
+            listProp.append(actorNode.get(attr))
+            if i < len(listProp):
+                if listProp[i] is not None:
+                    strProp = f"{listProp[i]}"
 
-    # f.write(f"[Actor: {actorNode.get('ActorID')}]: [Properties: {listProp2[i]}] - [Names: {listPropNames[i]}] - [Target: {listPropTarget[i]}]\n")
-    i += 1
-# f.close()
+                    if strProp.find(',') != -1:
+                        tmp = strProp.split(',')
+                        for j in range(len(tmp)):
+                            tmp[j] = '0x' + tmp[j]
+                        listProp2.append(tmp)
+                    else: listProp2.append('0x' + strProp)
+                else:
+                    listProp2.append('0x0000')
+        i += 1
+
+processProperties('Properties')
+processProperties('PropertiesNames')
+processProperties('PropertiesTarget')
 
 # --- Change the structure of the file --- #
 
