@@ -1,58 +1,55 @@
 import xml.etree.ElementTree as ET
 import xml.dom.minidom as MD
-import lists
+from lists import actors as actorID, objects as objectID
 
 
 tree = ET.parse('./ActorNames.xml')
 root = tree.getroot()
 
-actorID = lists.actorID
-objectID = lists.objectID
-
 # --- Process the original file's elements --- #
 
-# Process Actor IDs
-i = j = 0
-tmp2 = []
-for i in range(len(actorID)):
+# Determines how many 0 is needed to get the correct Actor/Object ID from the dictionary
+def getIDNumber(i):
     if i < 16:
-        idNumber = '000'
+        string = '000'
     elif i > 15 and i < 256:
-        idNumber = '00'
+        string = '00'
     else:
-        idNumber = '0'
-    idNumber += f'{i:X}'
+        string = '0'
+    string += f'{i:X}'
 
+    return string
+
+# Process Actor IDs
+i = 0
+for i in range(len(actorID)):
+    idNumber = getIDNumber(i)
     for actorNode in root:
-        if actorNode.get('ActorID') == idNumber:
+        if actorNode.get('Key') == idNumber:
             actorNode.set('ID', actorID.get(idNumber))
-            actorNode.attrib.pop('ActorID', None)
 
 # Process Object IDs
-i = 0
+i = j = k = 0
+tmp2 = []
 for i in range(len(objectID)):
-    if i < 16:
-        idNumber = '000'
-    elif i > 15 and i < 256:
-        idNumber = '00'
-    else:
-        idNumber = '0'
-    idNumber += f'{i:X}'
+    idNumber = getIDNumber(i)
 
-    for actorNode in root:
-        if actorNode.get('ObjectID') == idNumber:
+    for actorNode in root.iter('Actor'):
+        tmp = actorNode.get('Object')
+        
+        if tmp == idNumber:
             actorNode.set('ObjectID', objectID.get(idNumber))
 
-        elif actorNode.get('ObjectID') is not None:
-            tmp = actorNode.get('ObjectID')
-            if tmp.find(',') != -1:
-                tmp2 = tmp.split(',')
-                for j in range(len(tmp2)):
-                    if tmp2[j] == idNumber:
-                        tmp2[j] = objectID.get(idNumber)
+        elif tmp is not None and tmp.find(',') != -1:
+            tmp2 = tmp.split(',')
 
-                if len(tmp2) == 2: actorNode.set('ObjectID', tmp2[0] + ',' + tmp2[1])
-                if len(tmp2) == 3: actorNode.set('ObjectID', tmp2[0] + ',' + tmp2[1] + ',' + tmp2[2])
+            for k in range(len(objectID)):
+                for j in range(len(tmp2)):
+                    if tmp2[j] == getIDNumber(k):
+                        tmp2[j] = objectID.get(getIDNumber(k))
+
+            if len(tmp2) == 2: actorNode.set('ObjectID', tmp2[0] + ',' + tmp2[1])
+            if len(tmp2) == 3: actorNode.set('ObjectID', tmp2[0] + ',' + tmp2[1] + ',' + tmp2[2])
 
 # Generate the properties lists
 listProp, listProp2, listPropNames, listPropTarget = [], [], [], []
@@ -104,11 +101,6 @@ for actorNode in root:
 
 i = j = 0
 for actorNode in root:
-    # Remove Properties
-    actorNode.attrib.pop('Properties', None)
-    actorNode.attrib.pop('PropertiesNames', None)
-    actorNode.attrib.pop('PropertiesTarget', None)
-    
     for elem in actorNode.iter('Notes'):
         elem.text = ""
 
@@ -144,7 +136,7 @@ for actorNode in root:
                         elem.set('Target', propTarget)
 
             else:
-                propertyID = { 'ID': listProp2[i] }
+                propertyID = { 'Mask': listProp2[i] }
                 ET.SubElement(actorNode, 'Property', propertyID)
 
                 for elem in actorNode.iter('Property'):
@@ -181,15 +173,21 @@ for actorNode in root:
                             elem.set('Target', propTarget[j])
 
                 else:
-                    propertyID = { 'ID': listProp2[i][j] }
+                    propertyID = { 'Mask': listProp2[i][j] }
                     ET.SubElement(actorNode, 'Property', propertyID)
 
                     for elem in actorNode.iter('Property'):
                         elem.set('Name', propName[j])
                         if propTarget is not 'None':
                             elem.set('Target', propTarget[j])
-    
     i += 1
+
+    # Remove the useless attributes
+    actorNode.attrib.pop('Key', None)
+    actorNode.attrib.pop('Object', None)
+    actorNode.attrib.pop('Properties', None)
+    actorNode.attrib.pop('PropertiesNames', None)
+    actorNode.attrib.pop('PropertiesTarget', None)
 
 # --- Write the new file ---
 

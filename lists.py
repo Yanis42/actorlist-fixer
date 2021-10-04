@@ -1,5 +1,5 @@
 #Dictionnary containing every Actor IDs
-actorID = {
+actors = {
     "0000": "ACTOR_PLAYER",
     "0001": "ACTOR_UNSET_1",
     "0002": "ACTOR_EN_TEST",
@@ -474,7 +474,7 @@ actorID = {
 }
 
 #Dictionnary containing every Object IDs
-objectID = {
+objects = {
     "0000": "OBJECT_UNSET_0",
     "0001": "OBJECT_GAMEPLAY_KEEP",
     "0002": "OBJECT_GAMEPLAY_FIELD_KEEP",
