@@ -4,6 +4,8 @@ Edits SharpOcarina's ActorNames.xml file to make it decomp-friendly, the goal is
 # Instructions
 Place the 'ActorNames.xml" file from SharpOcarina in the same folder as these files then run 'actorlist-fixer.py'
 
+Note that this is the original file found in SO's XML folder, this script changes the structure of the XML file and it renames stuff
+
 # Contributing
 I'm not a great Python dev so I'll take anything that can improve my code, I don't have any instructions for contributions as long as it's working properly.
 

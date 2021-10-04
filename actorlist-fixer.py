@@ -101,9 +101,6 @@ processProperties('PropertiesTarget')
 
 i = j = 0
 for actorNode in root:
-    for elem in actorNode.iter('Notes'):
-        elem.text = ""
-
     # Generate the sub-elements
     propName = listPropNames[i]
     propTarget = listPropTarget[i]
@@ -182,12 +179,25 @@ for actorNode in root:
                             elem.set('Target', propTarget[j])
     i += 1
 
+    # Move the notes
+    for elem in actorNode:
+        if elem.find('Notes') is not None:
+            notes = elem.text
+            actorNode.remove(elem)
+            ET.SubElement(actorNode, 'Notes', {}).text = notes
+
     # Remove the useless attributes
     actorNode.attrib.pop('Key', None)
     actorNode.attrib.pop('Object', None)
     actorNode.attrib.pop('Properties', None)
     actorNode.attrib.pop('PropertiesNames', None)
     actorNode.attrib.pop('PropertiesTarget', None)
+
+    # Renaming stuff
+    for elem in actorNode.iter('Variable'):
+        elem.tag = 'Parameter'
+        elem.set('ParamValue', elem.get('Var'))
+        elem.attrib.pop('Var', None)
 
 # --- Write the new file ---
 
