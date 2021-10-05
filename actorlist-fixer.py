@@ -6,10 +6,13 @@ from lists import actors as actorID, objects as objectID
 tree = ET.parse('./ActorNames.xml')
 root = tree.getroot()
 
+# TODO: add a subelement for items (chest content, collectibles), rename categories (ex: 5 -> Ennemy)
+
 # --- Process the original file's elements --- #
 
 # Determines how many 0 is needed to get the correct Actor/Object ID from the dictionary
 def getIDNumber(i):
+    '''Returns a string containing the proper amount of 0 (hex)'''
     if i < 16:
         string = '000'
     elif i > 15 and i < 256:
@@ -51,9 +54,17 @@ for i in range(len(objectID)):
             if len(tmp2) == 2: actorNode.set('ObjectID', tmp2[0] + ',' + tmp2[1])
             if len(tmp2) == 3: actorNode.set('ObjectID', tmp2[0] + ',' + tmp2[1] + ',' + tmp2[2])
 
+# Renaming stuff
+for actorNode in root:
+    for elem in actorNode.iter('Variable'):
+        elem.tag = 'Parameter'
+        elem.set('ParamValue', elem.get('Var'))
+        elem.attrib.pop('Var', None)
+
 # Generate the properties lists
 listProp, listProp2, listPropNames, listPropTarget = [], [], [], []
 def processProperties(attr):
+    '''Creates lists containing properties, names and target'''
     global root
     i = j = 0
     for actorNode in root:
@@ -100,88 +111,63 @@ processProperties('PropertiesTarget')
 # --- Change the structure of the file --- #
 
 i = j = 0
+def genElem(actorNode, string, attr, attr2, name, target, value, j):
+    '''This function generates new sub-elements for the XML'''
+    propName = propTarget = propValue = ''
+
+    # If j is None then name, target and value aren't lists
+    if j is not None and j < len(target):
+        propName = name[j]
+        propTarget = target[j]
+        propValue = value[j]
+    elif j is None:
+        print("saucisse")
+        propName = name
+        propTarget = target
+        propValue = value
+
+    # Check if propName contains the string from the function's parameters
+    if propName.startswith(string) and attr != 'Property':
+        ET.SubElement(actorNode, attr, { attr2 : propValue } )
+        for elem in actorNode.iter(attr):
+            if propTarget != 'None': elem.set('Target', propTarget)
+            if string == 'Switch Flag ' and elem.get('Flag') == propValue: elem.text = propName
+
+    # If we're supposed to add a Property
+    elif attr == 'Property':
+        if propName != 'None': ET.SubElement(actorNode, attr, { attr2 : propValue } )
+        for elem in actorNode.iter(attr):
+            if elem.get(attr2) == propValue:
+                if propName != 'None': elem.set('Name', propName)
+                if propTarget != 'None': elem.set('Target', propTarget)
+
 for actorNode in root:
     # Generate the sub-elements
     propName = listPropNames[i]
-    propTarget = listPropTarget[i]
-    if propName is not 'None':
+
+    if propName != 'None':
         # If the current element is not a list
         if isinstance(propName, list) is False:
             # Generate the sub-elements SwitchFlag, ChestFlag and by default, Property
-            if propName == 'Switch Flag':
-                switchFlag = { 'Flag': listProp2[i] }
-                ET.SubElement(actorNode, 'SwitchFlag', switchFlag)
-                for elem in actorNode.iter('SwitchFlag'):
-                    if propTarget is not 'None':
-                        elem.set('Target', propTarget)
-            
-            elif propName.startswith('Switch Flag '):
-                switchFlag = { 'Flag': listProp2[i] }
-                ET.SubElement(actorNode, 'SwitchFlag', switchFlag)
-                for elem in actorNode.iter('SwitchFlag'):
-                    if elem.get('Flag') == listProp2[i]:
-                        elem.text = propName
+            if propName == 'Switch Flag': genElem(actorNode, 'Switch Flag', 'SwitchFlag', 'Flag', propName, listPropTarget[i], listProp2[i], None)
+            elif propName.startswith('Switch Flag '): genElem(actorNode, 'Switch Flag ', 'SwitchFlag', 'Flag', propName, listPropTarget[i], listProp2[i], None)
+            elif propName == 'Chest Flag': genElem(actorNode, 'Chest Flag', 'ChestFlag', 'Flag', propName, listPropTarget[i], listProp2[i], None)
+            else: genElem(actorNode, 'Property', 'Property', 'Mask', propName, listPropTarget[i], listProp2[i], None)
 
-                    if propTarget is not 'None':
-                        elem.set('Target', propTarget)
-
-            elif propName == 'Chest Flag':
-                chestFlag = { 'Flag': listProp2[i] }
-                ET.SubElement(actorNode, 'ChestFlag', chestFlag)
-                for elem in actorNode.iter('ChestFlag'):
-                    if propTarget is not 'None':
-                        elem.set('Target', propTarget)
-
-            else:
-                propertyID = { 'Mask': listProp2[i] }
-                ET.SubElement(actorNode, 'Property', propertyID)
-
-                for elem in actorNode.iter('Property'):
-                    elem.set('Name', propName)
-                    if propTarget is not 'None':
-                        elem.set('Target', propTarget)
-        
         # If the current element is a list
         elif isinstance(propName, list):
             # Generate the same sub-elements but now we're dealing with lists containing strings instead of strings
             for j in range(len(propName)):
-                if propName[j] == 'Switch Flag':
-                    switchFlag = { 'Flag': listProp2[i][j] }
-                    ET.SubElement(actorNode, 'SwitchFlag', switchFlag)
-                    for elem in actorNode.iter('SwitchFlag'):
-                        if propTarget is not 'None':
-                            elem.set('Target', propTarget[j])
-
-                elif propName[j].startswith('Switch Flag '):
-                    switchFlag = { 'Flag': listProp2[i][j] }
-                    ET.SubElement(actorNode, 'SwitchFlag', switchFlag)
-                    for elem in actorNode.iter('SwitchFlag'):
-                        if elem.get('Flag') == listProp2[i][j]:
-                            elem.text = propName[j]
-
-                        if propTarget is not 'None':
-                            elem.set('Target', propTarget[j])
-
-                elif propName[j] == 'Chest Flag':
-                    chestFlag = { 'Flag': listProp2[i][j] }
-                    ET.SubElement(actorNode, 'ChestFlag', chestFlag)
-                    for elem in actorNode.iter('ChestFlag'):
-                        if propTarget is not 'None':
-                            elem.set('Target', propTarget[j])
-
-                else:
-                    propertyID = { 'Mask': listProp2[i][j] }
-                    ET.SubElement(actorNode, 'Property', propertyID)
-
-                    for elem in actorNode.iter('Property'):
-                        elem.set('Name', propName[j])
-                        if propTarget is not 'None':
-                            elem.set('Target', propTarget[j])
+                if propName[j] == 'Switch Flag': genElem(actorNode, 'Switch Flag', 'SwitchFlag', 'Flag', propName, listPropTarget[i], listProp2[i], j)
+                elif propName[j].startswith('Switch Flag '): genElem(actorNode, 'Switch Flag ', 'SwitchFlag', 'Flag', propName, listPropTarget[i], listProp2[i], j)
+                elif propName[j] == 'Chest Flag': genElem(actorNode, 'Chest Flag', 'ChestFlag', 'Flag', propName, listPropTarget[i], listProp2[i], j)
+                else: genElem(actorNode, 'Property', 'Property', 'Mask', propName, listPropTarget[i], listProp2[i], j)
     i += 1
 
+for actorNode in root:
     # Move the notes
     for elem in actorNode:
-        if elem.find('Notes') is not None:
+        if elem.find('Notes'):
             notes = elem.text
             actorNode.remove(elem)
             ET.SubElement(actorNode, 'Notes', {}).text = notes
@@ -192,12 +178,6 @@ for actorNode in root:
     actorNode.attrib.pop('Properties', None)
     actorNode.attrib.pop('PropertiesNames', None)
     actorNode.attrib.pop('PropertiesTarget', None)
-
-    # Renaming stuff
-    for elem in actorNode.iter('Variable'):
-        elem.tag = 'Parameter'
-        elem.set('ParamValue', elem.get('Var'))
-        elem.attrib.pop('Var', None)
 
 # --- Write the new file ---
 
