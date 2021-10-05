@@ -878,3 +878,18 @@ objects = {
     "0190": "OBJECT_TIMEBLOCK",
     "0191": "OBJECT_ZL4"
 }
+
+categories = {
+    "0": "ACTORCAT_SWITCH",
+    "1": "ACTORCAT_BG",
+    "2": "ACTORCAT_PLAYER",
+    "3": "ACTORCAT_EXPLOSIVE",
+    "4": "ACTORCAT_NPC",
+    "5": "ACTORCAT_ENNEMY",
+    "6": "ACTORCAT_PROP",
+    "7": "ACTORCAT_ITEMACTION",
+    "8": "ACTORCAT_MISC",
+    "9": "ACTORCAT_BOSS",
+    "10": "ACTORCAT_DOOR",
+    "11": "ACTORCAT_CHEST"
+}

@@ -1,12 +1,10 @@
 import xml.etree.ElementTree as ET
 import xml.dom.minidom as MD
-from lists import actors as actorID, objects as objectID
+from lists import actors as actorID, objects as objectID, categories as actorCat
 
 
 tree = ET.parse('./ActorNames.xml')
 root = tree.getroot()
-
-# TODO: rename categories (ex: 5 -> Ennemy)
 
 # --- Process the original file's elements --- #
 
@@ -53,6 +51,14 @@ for i in range(len(objectID)):
 
             if len(tmp2) == 2: actorNode.set('ObjectID', tmp2[0] + ',' + tmp2[1])
             if len(tmp2) == 3: actorNode.set('ObjectID', tmp2[0] + ',' + tmp2[1] + ',' + tmp2[2])
+
+# Process Categories
+i = 0
+for i in range(len(actorCat)):
+    iStr = f"{i}"
+    for actorNode in root:
+        if actorNode.get('Category') == iStr:
+            actorNode.set('Category', actorCat.get(iStr))
 
 # Generate the properties lists
 listProp, listProp2, listPropNames, listPropTarget = [], [], [], []
