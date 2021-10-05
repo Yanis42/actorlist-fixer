@@ -1,4 +1,4 @@
-#Dictionnary containing every Actor IDs
+# Dictionnary containing every Actor IDs
 actors = {
     "0000": "ACTOR_PLAYER",
     "0001": "ACTOR_UNSET_1",
@@ -473,7 +473,7 @@ actors = {
     "01D6": "ACTOR_OBJ_WARP2BLOCK"
 }
 
-#Dictionnary containing every Object IDs
+# Dictionnary containing every Object IDs
 objects = {
     "0000": "OBJECT_UNSET_0",
     "0001": "OBJECT_GAMEPLAY_KEEP",
@@ -879,6 +879,7 @@ objects = {
     "0191": "OBJECT_ZL4"
 }
 
+# Dictionnary containing every actor categories
 categories = {
     "0": "ACTORCAT_SWITCH",
     "1": "ACTORCAT_BG",
