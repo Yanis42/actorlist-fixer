@@ -6,7 +6,7 @@ from lists import actors as actorID, objects as objectID
 tree = ET.parse('./ActorNames.xml')
 root = tree.getroot()
 
-# TODO: add a subelement for items (chest content, collectibles), rename categories (ex: 5 -> Ennemy)
+# TODO: rename categories (ex: 5 -> Ennemy)
 
 # --- Process the original file's elements --- #
 
@@ -148,21 +148,42 @@ for actorNode in root:
         # If the current element is not a list
         if isinstance(propName, list) is False:
             # Generate the sub-elements SwitchFlag, ChestFlag and by default, Property
-            if propName == 'Switch Flag': genElem(actorNode, 'Switch Flag', 'SwitchFlag', 'Flag', propName, listPropTarget[i], listProp2[i], None)
-            elif propName.startswith('Switch Flag '): genElem(actorNode, 'Switch Flag ', 'SwitchFlag', 'Flag', propName, listPropTarget[i], listProp2[i], None)
-            elif propName == 'Chest Flag': genElem(actorNode, 'Chest Flag', 'ChestFlag', 'Flag', propName, listPropTarget[i], listProp2[i], None)
+            if propName == 'Switch Flag': genElem(actorNode, 'Switch Flag', 'Flag', 'SwitchFlag', propName, listPropTarget[i], listProp2[i], None)
+            elif propName.startswith('Switch Flag '): genElem(actorNode, 'Switch Flag ', 'Flag', 'SwitchFlag', propName, listPropTarget[i], listProp2[i], None)
+            
+            elif propName == 'Chest Flag': genElem(actorNode, 'Chest Flag', 'Flag', 'ChestFlag', propName, listPropTarget[i], listProp2[i], None)
+            
+            elif propName == 'Collectible Flag': genElem(actorNode, 'Collectible Flag', 'Flag', 'CollectibleFlag', propName, listPropTarget[i], listProp2[i], None)
+            elif propName.startswith('Collectible Flag '): genElem(actorNode, 'Collectible Flag ', 'Flag', 'CollectibleFlag', propName, listPropTarget[i], listProp2[i], None)
+            
+            elif propName == 'Collectible Item': genElem(actorNode, 'Collectible Item', 'Item', 'CollectibleItem', propName, listPropTarget[i], listProp2[i], None)            
+            elif propName == 'Collectible to Spawn': genElem(actorNode, 'Collectible to Spawn', 'Item', 'CollectibleItem', propName, listPropTarget[i], listProp2[i], None)
+            elif propName == 'Collectible Var': genElem(actorNode, 'Collectible Var', 'Item', 'CollectibleItem', propName, listPropTarget[i], listProp2[i], None)
+
+            elif propName.startswith('Content'): genElem(actorNode, 'Content', 'Item', 'ChestContent', propName, listPropTarget[i], listProp2[i], None)
+
             else: genElem(actorNode, 'Property', 'Property', 'Mask', propName, listPropTarget[i], listProp2[i], None)
 
         # If the current element is a list
         elif isinstance(propName, list):
             # Generate the same sub-elements but now we're dealing with lists containing strings instead of strings
             for j in range(len(propName)):
-                if propName[j] == 'Switch Flag': genElem(actorNode, 'Switch Flag', 'SwitchFlag', 'Flag', propName, listPropTarget[i], listProp2[i], j)
-                elif propName[j].startswith('Switch Flag '): genElem(actorNode, 'Switch Flag ', 'SwitchFlag', 'Flag', propName, listPropTarget[i], listProp2[i], j)
-                elif propName[j] == 'Chest Flag': genElem(actorNode, 'Chest Flag', 'ChestFlag', 'Flag', propName, listPropTarget[i], listProp2[i], j)
+                if propName[j] == 'Switch Flag': genElem(actorNode, 'Switch Flag', 'Flag', 'SwitchFlag', propName, listPropTarget[i], listProp2[i], j)
+                elif propName[j].startswith('Switch Flag '): genElem(actorNode, 'Switch Flag ', 'Flag', 'SwitchFlag', propName, listPropTarget[i], listProp2[i], j)
+                
+                elif propName[j] == 'Chest Flag': genElem(actorNode, 'Chest Flag', 'Flag', 'ChestFlag', propName, listPropTarget[i], listProp2[i], j)
+                
+                elif propName[j] == 'Collectible Flag': genElem(actorNode, 'Collectible Flag', 'Flag', 'CollectibleFlag', propName, listPropTarget[i], listProp2[i], j)
+                elif propName[j].startswith('Collectible Flag '): genElem(actorNode, 'Collectible Flag ', 'Flag', 'CollectibleFlag', propName, listPropTarget[i], listProp2[i], j)
+                
+                elif propName[j] == 'Collectible Item': genElem(actorNode, 'Collectible Item', 'Item', 'CollectibleItem', propName, listPropTarget[i], listProp2[i], j)            
+                elif propName[j] == 'Collectible to Spawn': genElem(actorNode, 'Collectible to Spawn', 'Item', 'CollectibleItem', propName, listPropTarget[i], listProp2[i], j)
+                elif propName[j] == 'Collectible Var': genElem(actorNode, 'Collectible Var', 'Item', 'CollectibleItem', propName, listPropTarget[i], listProp2[i], j)
+
+                elif propName[j].startswith('Content'): genElem(actorNode, 'Content', 'Item', 'ChestContent', propName, listPropTarget[i], listProp2[i], j)                
+                
                 else: genElem(actorNode, 'Property', 'Property', 'Mask', propName, listPropTarget[i], listProp2[i], j)
     i += 1
-
 
     # Clean-Up
     for elem in actorNode.iter('Variable'):
