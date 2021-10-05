@@ -54,13 +54,6 @@ for i in range(len(objectID)):
             if len(tmp2) == 2: actorNode.set('ObjectID', tmp2[0] + ',' + tmp2[1])
             if len(tmp2) == 3: actorNode.set('ObjectID', tmp2[0] + ',' + tmp2[1] + ',' + tmp2[2])
 
-# Renaming stuff
-for actorNode in root:
-    for elem in actorNode.iter('Variable'):
-        elem.tag = 'Parameter'
-        elem.set('ParamValue', elem.get('Var'))
-        elem.attrib.pop('Var', None)
-
 # Generate the properties lists
 listProp, listProp2, listPropNames, listPropTarget = [], [], [], []
 def processProperties(attr):
@@ -170,15 +163,19 @@ for actorNode in root:
                 else: genElem(actorNode, 'Property', 'Property', 'Mask', propName, listPropTarget[i], listProp2[i], j)
     i += 1
 
-for actorNode in root:
-    # Move the notes
+
+    # Clean-Up
+    for elem in actorNode.iter('Variable'):
+        elem.tag = 'Parameter'
+        elem.set('ParamValue', elem.get('Var'))
+        elem.attrib.pop('Var', None)
+
     for elem in actorNode:
-        if elem.find('Notes'):
+        if elem.tag == 'Notes':
             notes = elem.text
             actorNode.remove(elem)
             ET.SubElement(actorNode, 'Notes', {}).text = notes
 
-    # Remove the useless attributes
     actorNode.attrib.pop('Key', None)
     actorNode.attrib.pop('Object', None)
     actorNode.attrib.pop('Properties', None)
