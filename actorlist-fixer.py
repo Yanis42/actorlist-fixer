@@ -79,6 +79,8 @@ def processProperties(attr):
                     if attr == 'PropertiesTarget': listPropTarget.append(prop)
                 else:
                     tmp = prop.split(',')
+                    for j in range(len(tmp)):
+                        if tmp[j] == 'Var': tmp[j] = 'ParamValue'
                     if attr == 'PropertiesNames': listPropNames.append(tmp)
                     if attr == 'PropertiesTarget': listPropTarget.append(tmp)
             else:
@@ -116,30 +118,34 @@ def genElem(actorNode, string, attr, attr2, name, target, value, j):
     propName = propTarget = propValue = ''
 
     # If j is None then name, target and value aren't lists
-    if j is not None and j < len(target):
-        propName = name[j]
-        propTarget = target[j]
-        propValue = value[j]
-    elif j is None:
-        print("saucisse")
+    if isinstance(name, list) is False:
         propName = name
-        propTarget = target
+        if target == 'None': propTarget = 'None'
+        else: propTarget = target
         propValue = value
+
+    elif isinstance(name, list) is True:
+        propName = name[j]
+        if target != 'None' and j < len(target): propTarget = target[j]
+        else: propTarget = 'None'
+        propValue = value[j]
 
     # Check if propName contains the string from the function's parameters
     if propName.startswith(string) and attr != 'Property':
-        ET.SubElement(actorNode, attr, { attr2 : propValue } )
-        for elem in actorNode.iter(attr):
-            if propTarget != 'None': elem.set('Target', propTarget)
-            if string == 'Switch Flag ' and elem.get('Flag') == propValue: elem.text = propName
+        if propName != 'None': 
+            ET.SubElement(actorNode, attr, { attr2 : propValue } )
+            for elem in actorNode.iter(attr):
+                if propTarget != 'None': elem.set('Target', propTarget)
+                if string == 'Switch Flag ' and elem.get('Flag') == propValue: elem.text = propName
 
     # If we're supposed to add a Property
     elif attr == 'Property':
-        if propName != 'None': ET.SubElement(actorNode, attr, { attr2 : propValue } )
-        for elem in actorNode.iter(attr):
-            if elem.get(attr2) == propValue:
-                if propName != 'None': elem.set('Name', propName)
-                if propTarget != 'None': elem.set('Target', propTarget)
+        if propName != 'None': 
+            ET.SubElement(actorNode, attr, { attr2 : propValue } )
+            for elem in actorNode.iter(attr):
+                if elem.get('Name') is None:
+                    if propName != 'None': elem.set('Name', propName)
+                    if propTarget != 'None': elem.set('Target', propTarget)
 
 for actorNode in root:
     # Generate the sub-elements
