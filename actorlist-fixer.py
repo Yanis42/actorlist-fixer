@@ -11,7 +11,7 @@ except:
 try:
     tree = ET.parse('./ActorNames.xml')
 except:
-    print("ERROR: File 'ActorNames.xml' is missing. You can find it in SO's XML folder.")
+    print("ERROR: File 'ActorNames.xml' is missing. You can find it in SO's (1.28) XML folder.")
     exit()
 
 root = tree.getroot()
@@ -32,6 +32,8 @@ def getIDNumber(i):
     return string
 
 # Process Actor IDs
+print("INFO: Processing Actor IDs...")
+
 i = 0
 for i in range(len(actorID)):
     idNumber = getIDNumber(i)
@@ -40,6 +42,8 @@ for i in range(len(actorID)):
             actorNode.set('ID', actorID.get(idNumber))
 
 # Process Object IDs
+print("INFO: Processing Object IDs...")
+
 i = j = k = 0
 tmp2 = []
 for i in range(len(objectID)):
@@ -63,6 +67,8 @@ for i in range(len(objectID)):
             if len(tmp2) == 3: actorNode.set('ObjectID', tmp2[0] + ',' + tmp2[1] + ',' + tmp2[2])
 
 # Process Categories
+print("INFO: Processing Actor categories...")
+
 i = 0
 for i in range(len(actorCat)):
     iStr = f"{i}"
@@ -158,6 +164,7 @@ def genElem(actorNode, string, attr, attr2, name, target, value, j):
                     if propName != 'None': elem.set('Name', propName)
                     if propTarget != 'None': elem.set('Target', propTarget)
 
+print("INFO: Creating new sub-elements...")
 for actorNode in root:
     # Generate the sub-elements
     propName = listPropNames[i]
@@ -224,10 +231,15 @@ for actorNode in root:
 
 # --- Write the new file ---
 
+print("INFO: Writing the file...")
 # Formatting
 xmlStr = MD.parseString(ET.tostring(root)).toprettyxml(indent="  ", encoding='UTF-8')
 xmlStr = b'\n'.join([s for s in xmlStr.splitlines() if s.strip()])
 
 # Writing
-with open('./ActorList.xml', 'bw') as f:
-    f.write(xmlStr)
+try:
+    with open('./ActorList.xml', 'bw') as f:
+        f.write(xmlStr)
+except:
+    print("ERROR: The file can't be written. Update the permissions, this folder is probably read-only.")
+    exit()
