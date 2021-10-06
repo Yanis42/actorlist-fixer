@@ -1,9 +1,19 @@
 import xml.etree.ElementTree as ET
 import xml.dom.minidom as MD
-from lists import actors as actorID, objects as objectID, categories as actorCat
+from sys import exit
 
+try:
+    from lists import actors as actorID, objects as objectID, categories as actorCat
+except:
+    print("ERROR: File 'lists.py' is missing. You can find it on Github: https://github.com/Yanis42/actorlist-fixer")
+    exit()
 
-tree = ET.parse('./ActorNames.xml')
+try:
+    tree = ET.parse('./ActorNames.xml')
+except:
+    print("ERROR: File 'ActorNames.xml' is missing. You can find it in SO's XML folder.")
+    exit()
+
 root = tree.getroot()
 
 # --- Process the original file's elements --- #
@@ -116,7 +126,7 @@ def genElem(actorNode, string, attr, attr2, name, target, value, j):
     '''This function generates new sub-elements for the XML'''
     propName = propTarget = propValue = ''
 
-    # If j is None then name, target and value aren't lists
+    # Looking for lists
     if isinstance(name, list) is False:
         propName = name
         if target == 'None': propTarget = 'None'
@@ -129,7 +139,7 @@ def genElem(actorNode, string, attr, attr2, name, target, value, j):
         else: propTarget = 'None'
         propValue = value[j]
 
-    # Check if propName contains the string from the function's parameters
+    # Actual creation of the sub-element
     if propName.startswith(string) and attr != 'Property':
         if propName != 'None':
             ET.SubElement(actorNode, attr, { 'Mask' : propValue } )
@@ -139,7 +149,7 @@ def genElem(actorNode, string, attr, attr2, name, target, value, j):
                     if propTarget != 'None': elem.set('Target', propTarget)
                     if string == 'Switch Flag ' and elem.get('Flag') == propValue: elem.text = propName
 
-    # If we're supposed to add a Property
+    # The default name is 'Property'
     elif attr == 'Property':
         if propName != 'None': 
             ET.SubElement(actorNode, attr, { attr2 : propValue } )
