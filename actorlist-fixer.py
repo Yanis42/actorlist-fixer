@@ -157,7 +157,7 @@ def genElem(actorNode, string, attr, attr2, name, target, value, j):
 
     # The default name is 'Property'
     elif attr == 'Property':
-        if propName != 'None': 
+        if propName != 'None':
             ET.SubElement(actorNode, attr, { attr2 : propValue } )
             for elem in actorNode.iter(attr):
                 if elem.get('Name') is None:
@@ -168,8 +168,7 @@ print("INFO: Creating new sub-elements...")
 for actorNode in root:
     # Generate the sub-elements
     propName = listPropNames[i]
-
-    ET.SubElement(actorNode, 'Property', { 'Mask' : '0x0000', 'Name' : 'None' } )
+    isNoneHere = 0 # Need this because of the for loop when handling lists
 
     if propName != 'None':
         # If the current element is not a list
@@ -189,7 +188,9 @@ for actorNode in root:
 
             elif propName.startswith('Content'): genElem(actorNode, 'Content', 'Item', 'ChestContent', propName, listPropTarget[i], listProp2[i], None)
 
-            else: genElem(actorNode, 'Property', 'Property', 'Mask', propName, listPropTarget[i], listProp2[i], None)
+            else: 
+                ET.SubElement(actorNode, 'Property', { 'Mask' : '0x0000', 'Name' : 'None' } )
+                genElem(actorNode, 'Property', 'Property', 'Mask', propName, listPropTarget[i], listProp2[i], None)
 
         # If the current element is a list
         elif isinstance(propName, list):
@@ -209,7 +210,11 @@ for actorNode in root:
 
                 elif propName[j].startswith('Content'): genElem(actorNode, 'Content', 'Item', 'ChestContent', propName, listPropTarget[i], listProp2[i], j)                
                 
-                else: genElem(actorNode, 'Property', 'Property', 'Mask', propName, listPropTarget[i], listProp2[i], j)
+                else: 
+                    if isNoneHere == 0:
+                        ET.SubElement(actorNode, 'Property', { 'Mask' : '0x0000', 'Name' : 'None' } )
+                        isNoneHere = 1
+                    genElem(actorNode, 'Property', 'Property', 'Mask', propName, listPropTarget[i], listProp2[i], j)
     i += 1
 
     # Clean-Up
