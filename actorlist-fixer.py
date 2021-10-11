@@ -169,6 +169,8 @@ for actorNode in root:
     # Generate the sub-elements
     propName = listPropNames[i]
 
+    ET.SubElement(actorNode, 'Property', { 'Mask' : '0x0000', 'Name' : 'None' } )
+
     if propName != 'None':
         # If the current element is not a list
         if isinstance(propName, list) is False:
