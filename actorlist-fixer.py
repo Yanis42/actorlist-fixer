@@ -191,7 +191,7 @@ for actorNode in root:
 
         # If the current element is a list
         elif isinstance(propName, list):
-            # Generate the same sub-elements but now we're dealing with lists containing strings instead of strings
+            # Generate the same sub-elements but now we're dealing with lists of strings
             for j in range(len(propName)):
                 if propName[j] == 'Switch Flag': genElem(actorNode, 'Switch Flag', 'Flag', 'Switch', propName, listPropTarget[i], listProp2[i], j)
                 elif propName[j].startswith('Switch Flag '): genElem(actorNode, 'Switch Flag ', 'Flag', 'Switch', propName, listPropTarget[i], listProp2[i], j)

@@ -5,3 +5,4 @@ __pycache__/
 # Per-user configuration
 *.xml
 *.txt
+tests.py
