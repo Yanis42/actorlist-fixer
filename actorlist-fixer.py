@@ -147,6 +147,7 @@ def genElem(actorNode, string, attr, attr2, name, target, value, j):
 
     # Actual creation of the sub-element
     if propName.startswith(string) and attr != 'Property':
+        i = 1
         if propName != 'None':
             ET.SubElement(actorNode, attr, { 'Mask' : propValue } )
             for elem in actorNode.iter(attr):
@@ -154,15 +155,22 @@ def genElem(actorNode, string, attr, attr2, name, target, value, j):
                     elem.set('Type', attr2)
                     if propTarget != 'None': elem.set('Target', propTarget)
                     if string == 'Switch Flag ' and elem.get('Flag') == propValue: elem.text = propName
+                if string.startswith('Switch '):
+                    elem.set('Index', f'{i}')
+                    i += 1
 
     # The default name is 'Property'
     elif attr == 'Property':
+        k = 1
         if propName != 'None':
             ET.SubElement(actorNode, attr, { attr2 : propValue } )
             for elem in actorNode.iter(attr):
                 if elem.get('Name') is None:
                     if propName != 'None': elem.set('Name', propName)
                     if propTarget != 'None': elem.set('Target', propTarget)
+                if elem.get('Name') != 'None':
+                    elem.set('Index', f'{k}')
+                    k += 1
 
 print("INFO: Creating new sub-elements...")
 for actorNode in root:
@@ -230,7 +238,6 @@ for actorNode in root:
             actorNode.remove(elem)
             ET.SubElement(actorNode, 'Notes', {}).text = notes
 
-    actorNode.attrib.pop('Key', None)
     actorNode.attrib.pop('Object', None)
     actorNode.attrib.pop('Properties', None)
     actorNode.attrib.pop('PropertiesNames', None)
