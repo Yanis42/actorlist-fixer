@@ -3,7 +3,7 @@ import xml.dom.minidom as MD
 from sys import exit
 
 try:
-    from lists import actors as actorID, objects as objectID, categories as actorCat
+    from lists import actors as actorID, objects as objectID, categories as actorCat, objectsNames as objectNames, checkBox
 except:
     print("ERROR: File 'lists.py' is missing. You can find it on Github: https://github.com/Yanis42/actorlist-fixer")
     exit()
@@ -54,6 +54,7 @@ for i in range(len(objectID)):
         
         if tmp == idNumber:
             actorNode.set('ObjectID', objectID.get(idNumber))
+            # actorNode.set('ObjectName', objectNames.get(objectID.get(idNumber)))
 
         elif tmp is not None and tmp.find(',') != -1:
             tmp2 = tmp.split(',')
@@ -242,6 +243,20 @@ for actorNode in root:
     actorNode.attrib.pop('Properties', None)
     actorNode.attrib.pop('PropertiesNames', None)
     actorNode.attrib.pop('PropertiesTarget', None)
+
+# From Property to Bool
+i = 0
+checkBoxKeys = [key for key in checkBox.keys()]
+checkBoxVals = [val.split(',') for val in checkBox.values()]
+for actorNode in root:
+    if i < len(checkBoxKeys) and actorNode.get('ID') == checkBoxKeys[i]:
+        for elem in actorNode:
+            if elem.tag == 'Property':
+                for j in range(len(checkBoxVals)):
+                    for k in range(len(checkBoxVals[j])):
+                        if checkBoxVals[j][k] == elem.get('Index'):
+                            elem.tag = 'Bool'
+        i += 1
 
 # --- Write the new file ---
 
