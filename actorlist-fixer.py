@@ -3,7 +3,8 @@ import xml.dom.minidom as MD
 from sys import exit
 
 try:
-    from lists import actors as actorID, objects as objectID, categories as actorCat, objectsNames as objectNames, checkBox
+    from lists import actors as actorID, objects as objectID, categories as actorCat, objectsNames as objectNames, checkBox, \
+        ootEnWonderItemDrop as wonderList, ootEnItem00Drop as item00List, ootEnBoxContent as chestList
 except:
     print("ERROR: File 'lists.py' is missing. You can find it on Github: https://github.com/Yanis42/actorlist-fixer")
     exit()
@@ -40,6 +41,7 @@ for i in range(len(actorID)):
     for actorNode in root:
         if actorNode.get('Key') == idNumber:
             actorNode.set('ID', actorID.get(idNumber))
+            actorNode.set('Name', (actorNode.get('Name') + ' - ' + actorNode.get('ID').replace('ACTOR_','')))
 
 # Process Object IDs
 print("INFO: Processing Object IDs...")
@@ -258,8 +260,28 @@ for actorNode in root:
                             elem.tag = 'Bool'
         i += 1
 
-# --- Write the new file ---
+# Add additional lists
+def addList(name, list):
+    root.append(ET.Element('List'))
+    for node in root:
+        if node.tag == 'List' and node.get('Name') is None:
+            node.set('Name', name)
+            for i in range(len(list)):
+                node.append(ET.Element('Item'))
+    for node in root:
+        if node.tag == 'List' and node.get('Name') == name:
+            i = 0
+            for elem in node:
+                if i < len(list):
+                    elem.set('Name', list[i][0])
+                    elem.set('Value', list[i][1])
+                    i += 1
 
+addList('En_Wonder_Item Drops', wonderList)
+addList('Collectibles', item00List)
+addList('Chest Content', chestList)
+
+# --- Write the new file ---
 print("INFO: Writing the file...")
 # Formatting
 xmlStr = MD.parseString(ET.tostring(root)).toprettyxml(indent="  ", encoding='UTF-8')
