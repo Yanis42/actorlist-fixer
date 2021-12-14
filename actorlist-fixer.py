@@ -1,10 +1,9 @@
-import xml.etree.ElementTree as ET
-import xml.dom.minidom as MD
+import xml.etree.ElementTree as ET, xml.dom.minidom as MD
 from sys import exit
 
 try:
     from lists import actors as actorID, objects as objectID, categories as actorCat, objectsNames as objectNames, checkBox, \
-        ootEnWonderItemDrop as wonderList, ootEnItem00Drop as item00List, ootEnBoxContent as chestList
+        ootEnWonderItemDrop as wonderList, ootEnItem00Drop as item00List, ootEnBoxContent as chestList, subscribe
 except:
     print("ERROR: File 'lists.py' is missing. You can find it on Github: https://github.com/Yanis42/actorlist-fixer")
     exit()
@@ -233,6 +232,8 @@ for actorNode in root:
         elem.tag = 'Parameter'
         elem.set('Params', elem.get('Var'))
         elem.attrib.pop('Var', None)
+        if elem.get('Mask') == '0xFFFF':
+            elem.attrib.pop('Mask', None)
 
     for elem in actorNode:
         if elem.tag == 'Notes':
@@ -258,6 +259,25 @@ for actorNode in root:
                     for k in range(len(checkBoxVals[j])):
                         if checkBoxVals[j][k] == elem.get('Index'):
                             elem.tag = 'Bool'
+        i += 1
+
+# Add tied elements, used to determine which actor needs which props
+# Format: <ElemTag Index="1" Mask="0x0010" Name="Toggle" Subscribe=";1,2,3"
+i = 0
+subKeys = list(subscribe.keys())
+for actorNode in root:
+    actorID = actorNode.get('ID')
+    if i < len(subKeys) and actorID == subKeys[i]:
+        j = 0
+        keys = list(subscribe[actorID].keys())
+        for elemNode in actorNode:
+            params = elemNode.get('Params')
+            settings = None
+            for j in range(len(keys)):
+                if params is not None and params == keys[j]:
+                    settings = subscribe[actorID][params]
+                    elemNode.set('TiedTarget', f'{settings[1]}')
+                    elemNode.set('TiedMask', f'{settings[0]}')
         i += 1
 
 # Add additional lists
