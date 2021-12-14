@@ -282,7 +282,7 @@ for actorNode in root:
                     elem.set('TiedParam', params)
                 else:
                     for k in range(len(listTag)):
-                        if listIndex[k] == elemIndex:
+                        if listIndex[k] == elemIndex and listTag[k] == elem.tag:
                             elem.set('TiedParam', params)
         i += 1
 
