@@ -3,7 +3,7 @@ from sys import exit
 
 try:
     from lists import actors as actorID, objects as objectID, categories as actorCat, objectsNames as objectNames, checkBox, \
-        ootEnWonderItemDrop as wonderList, ootEnItem00Drop as item00List, ootEnBoxContent as chestList, subscribe
+        ootEnWonderItemDrop as wonderList, ootEnItem00Drop as item00List, ootEnBoxContent as chestList, tiedParams
 except:
     print("ERROR: File 'lists.py' is missing. You can find it on Github: https://github.com/Yanis42/actorlist-fixer")
     exit()
@@ -257,21 +257,33 @@ for actorNode in root:
 
 # Add tied elements, used to determine which actor needs which props
 # Format: <ElemTag Index="1" Mask="0x0010" Name="Toggle" Subscribe=";1,2,3"
+# Format: <ElemTag Index="1" Mask="0x0010" Name="Toggle" Subscribe=";1,2,3"
 i = 0
-subKeys = list(subscribe.keys())
+actorKeys = list(tiedParams.keys())
 for actorNode in root:
     actorID = actorNode.get('ID')
-    if i < len(subKeys) and actorID == subKeys[i]:
-        j = 0
-        keys = list(subscribe[actorID].keys())
-        for elemNode in actorNode:
-            params = elemNode.get('Params')
-            settings = None
-            for j in range(len(keys)):
-                if params is not None and params == keys[j]:
-                    settings = subscribe[actorID][params]
-                    elemNode.set('TiedTarget', f'{settings[1]}')
-                    elemNode.set('TiedMask', f'{settings[0]}')
+    if i < len(actorKeys) and actorID == actorKeys[i]:
+        listKeys = tiedParams[actorID].keys()
+        for elem in actorNode:
+            for j in range(1, len(listKeys) + 1):
+                params = tiedParams[actorID][j][0]
+                tag = tiedParams[actorID][j][1]
+                index = tiedParams[actorID][j][2]
+
+                if tag.find(',') != -1:
+                    listTag = tag.split(',')
+                    listIndex = index.split(',')
+                else: 
+                    listTag = [tag]
+                    listIndex = [index]
+
+                elemIndex = elem.get('Index')
+                if len(listTag) == 1 and listTag[0] == elem.tag and listIndex[0] == elemIndex:
+                    elem.set('TiedParam', params)
+                else:
+                    for k in range(len(listTag)):
+                        if listIndex[k] == elemIndex:
+                            elem.set('TiedParam', params)
         i += 1
 
 # Add additional lists

@@ -8,74 +8,60 @@ checkBox = {
 }
 
 # Used to draw the relevant props on Blender
-# Format: "Actor ID": {"Type": ["Mask1,Mask2,...", "Target1,Target2,...", "Tag1,Tag2,...", "Index1,Index2,..."]}
-subscribe = {
+# Format: "Actor ID": {Index: ["Type1,Type2,...", "Tag1,Tag2,...", "Index1,Index2,..."]}
+tiedParams = {
     "ACTOR_EN_WALLMAS": {
-        "0002": ["3F00", "Params", "Flag", "1"],
+        1: ["0002", "Flag", "1"],
     },
     "ACTOR_EN_HOLL": {
-        "00C0": ["003F", "Params", "Flag", "1"],
+        1: ["00C0", "Flag", "1"],
     },
     "ACTOR_EN_RIVER_SOUND": {
-        "0000": ["FF00", "Params", "Property", "1"],
+        1: ["0000", "Property", "1"],
     },
     "ACTOR_EN_MB": {
-        "00FF": ["FF00", "Params", "Property", "1"],
+        1: ["00FF", "Property", "1"],
     },
     "ACTOR_OBJ_SYOKUDAI": {
-        "1000": ["03C0", "Params", "Property", "1"],
+        1: ["1000", "Property", "1"],
     },
     "ACTOR_BG_MIZU_MOVEBG": {
-        "7000": ["0F00,00F0,000F", "Params,Params,Params", "Property,Property,Property", "1,2,3"],
+        1: ["7000", "Property,Property,Property", "1,2,3"],
     },
     "ACTOR_EN_WOOD02": {
-        "0000": ["FF00", "Params", "Property", "3"],
-        "0001": ["FF00", "Params", "Property", "3"],
-        "0002": ["FF00", "Params", "Property", "3"],
-        "0003": ["FF00", "Params", "Property", "3"],
-        "0004": ["FF00", "Params", "Property", "3"],
-        "0005": ["FF00", "Params", "Property", "3"],
-        "0006": ["FF00", "Params", "Property", "3"],
-        "0007": ["FF00", "Params", "Property", "3"],
-        "0008": ["FF00", "Params", "Property", "3"],
-        "0009": ["FF00", "Params", "Property", "3"],
-        "000A": ["FF00", "Params", "Property", "3"],
+        1: ["0000,0001,0002,0003,0004,0005,0006,0007,0008,0009,000A", "Property", "3"],
     },
     "ACTOR_EN_TRAP": {
-        "0000": ["0001,0002,0004,0008", "Params,Params,Params,Params", "Property,Property,Property,Property", "2,3,4,5"],
-        "0010": ["F000", "Params", "Property", "1"],
-        "0020": ["F000", "Params", "Property", "1"],
+        1: ["0000", "Property,Property,Property,Property", "2,3,4,5"],
+        2: ["0010,0020", "Property", "1"],
     },
     "ACTOR_DOOR_ANA": {
-        "0000": ["000F", "ZRot", "Property", "2"],
-        "1000": ["000F", "ZRot", "Property", "3"],
+        1: [ "0000", "Property", "2"],
+        2: [ "1000", "Property", "3"],
     },
     "ACTOR_BG_HAKA_MEGANEBG": {
-        "0003": ["FF00", "Params", "Flag", "1"],
+        1: ["0003", "Flag", "1"],
     },
     "ACTOR_BG_MORI_HASHIRA4": {
-        "0001": ["FF00", "Params", "Flag", "1"],
+        1: ["0001", "Flag", "1"],
     },
     "ACTOR_EN_WONDER_ITEM": {
-        "1800": ["FF00", "ZRot", "Property", "1"],
-        "1000": ["FFFF", "ZRot", "Property", "2"],
+        1: ["1800", "Property", "1"],
+        2: ["1000", "Property", "2"],
     },
     "ACTOR_OBJ_SWITCH": {
-        "0000": ["0010,0020,0030", "Params,Params,Params", "Bool,Bool,Bool", "1,2,3"],
-        "0001": ["0010,0020,0030", "Params,Params,Params", "Bool,Bool,Bool", "1,2,3"],
-        "0002": ["0010,0080", "Params,Params", "Bool,Bool", "1,5"],
-        "0003": ["0010,0040", "Params,Params", "Bool,Bool", "1,4"],
-        "0004": ["0010,0040", "Params,Params", "Bool,Bool", "1,4"],
+        1: ["0000,0001", "Bool,Bool", "2,3"],
+        2: ["0002", "Bool", "5"],
+        3: ["0003,0004", "Bool", "4"],
     },
     "ACTOR_EN_HY": {
-        "0003": ["0780", "Params", "Property", "1"],
-        "0007": ["0780", "Params", "Property", "1"],
+        1: ["0003,0007", "Property", "1"],
     },
     "ACTOR_BG_SPOT05_SOKO": {
-        "0001": ["3F00", "Params", "Property", "1"],
+        1: ["0001", "Property", "1"],
     },
     "ACTOR_BG_SPOT01_OBJECTS2": {
-        "0003": ["FF00", "Params", "Property", "1"],
+        1: ["0003", "Property", "1"],
     },
 }
 
