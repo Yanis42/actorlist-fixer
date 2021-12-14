@@ -170,7 +170,7 @@ def genElem(actorNode, string, attr, attr2, name, target, value, j):
                 if elem.get('Name') is None:
                     if propName != 'None': elem.set('Name', propName)
                     if propTarget != 'None': elem.set('Target', propTarget)
-                if elem.get('Name') != 'None':
+                if elem.get('Name') is not None:
                     elem.set('Index', f'{k}')
                     k += 1
 
@@ -198,9 +198,7 @@ for actorNode in root:
 
             elif propName.startswith('Content'): genElem(actorNode, 'Content', 'Item', 'ChestContent', propName, listPropTarget[i], listProp2[i], None)
 
-            else: 
-                ET.SubElement(actorNode, 'Property', { 'Mask' : '0x0000', 'Name' : 'None' } )
-                genElem(actorNode, 'Property', 'Property', 'Mask', propName, listPropTarget[i], listProp2[i], None)
+            else: genElem(actorNode, 'Property', 'Property', 'Mask', propName, listPropTarget[i], listProp2[i], None)
 
         # If the current element is a list
         elif isinstance(propName, list):
@@ -220,11 +218,7 @@ for actorNode in root:
 
                 elif propName[j].startswith('Content'): genElem(actorNode, 'Content', 'Item', 'ChestContent', propName, listPropTarget[i], listProp2[i], j)                
                 
-                else: 
-                    if isNoneHere == 0:
-                        ET.SubElement(actorNode, 'Property', { 'Mask' : '0x0000', 'Name' : 'None' } )
-                        isNoneHere = 1
-                    genElem(actorNode, 'Property', 'Property', 'Mask', propName, listPropTarget[i], listProp2[i], j)
+                else: genElem(actorNode, 'Property', 'Property', 'Mask', propName, listPropTarget[i], listProp2[i], j)
     i += 1
 
     # Clean-Up
