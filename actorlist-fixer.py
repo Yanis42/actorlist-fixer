@@ -243,17 +243,27 @@ for actorNode in root:
 
 # From Property to Bool
 i = 0
-checkBoxKeys = [key for key in checkBox.keys()]
-checkBoxVals = [val.split(',') for val in checkBox.values()]
+actorKeys = list(checkBox.keys())
 for actorNode in root:
-    if i < len(checkBoxKeys) and actorNode.get('ID') == checkBoxKeys[i]:
-        for elem in actorNode:
-            if elem.tag == 'Property':
-                for j in range(len(checkBoxVals)):
-                    for k in range(len(checkBoxVals[j])):
-                        if checkBoxVals[j][k] == elem.get('Index'):
-                            elem.tag = 'Bool'
-        i += 1
+    actorID = actorNode.get('ID')
+    for i in range(len(actorKeys)):
+        if actorID == actorKeys[i]:
+            for elem in actorNode:
+                if elem.tag == 'Property':
+                    index = checkBox[actorID]
+
+                    if index.find(',') != -1:
+                        listIndex = index.split(',')
+                    else: 
+                        listIndex = [index]
+
+                    elemIndex = elem.get('Index')
+                    if len(listIndex) == 1 and listIndex[0] == elemIndex:
+                        elem.tag = 'Bool'
+                    else:
+                        for k in range(len(listIndex)):
+                            if listIndex[k] == elemIndex:
+                                elem.tag = 'Bool'
 
 # Add tied elements, used to determine which actor needs which props
 # Format: <ElemTag Index="1" Mask="0x0010" Name="Toggle" Subscribe=";1,2,3"
