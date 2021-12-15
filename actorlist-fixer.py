@@ -265,6 +265,20 @@ for actorNode in root:
                             if listIndex[k] == elemIndex:
                                 elem.tag = 'Bool'
 
+# Fix Indexes
+for actorNode in root:
+    i = j = k = 1
+    for elem in actorNode:
+        if elem.tag == 'Bool':
+            elem.set('Index', f'{i}')
+            i += 1
+        elif elem.tag == 'Property':
+            elem.set('Index', f'{j}')
+            j += 1
+        elif elem.tag == 'Flag':
+            elem.set('Index', f'{k}')
+            k += 1
+
 # Add tied elements, used to determine which actor needs which props
 # Format: <ElemTag Index="1" Mask="0x0010" Name="Toggle" Subscribe=";1,2,3"
 # Format: <ElemTag Index="1" Mask="0x0010" Name="Toggle" Subscribe=";1,2,3"
