@@ -4,12 +4,25 @@ checkBox = {
     "ACTOR_OBJ_SWITCH": "1,2,3,4,5",
     "ACTOR_EN_FIREFLY": "1",
     "ACTOR_EN_DOOR": "1",
-    "ACTOR_OBJ_TIMEBLOCK": "2,4"
+    "ACTOR_OBJ_TIMEBLOCK": "2,4",
+    "ACTOR_BG_BREAKWALL": "1",
+    "ACTOR_OBJ_SYOKUDAI": "3",
+    "ACTOR_DEMO_EFFECT": "2",
+    "ACTOR_EN_RD": "3",
+    "ACTOR_EN_PO_SISTERS": "3",
+    "ACTOR_OBJ_BOMBIWA": "2",
+    "ACTOR_EN_ISHI": "3",
+    "ACTOR_OBJ_LIGHTSWITCH": "1",
+    "ACTOR_OBJ_MAKEOSHIHIKI": "1,2,5",
 }
 
 # Used to draw the relevant props on Blender
 # Format: "Actor ID": {Index: ["Type1,Type2,...", "Tag1,Tag2,...", "Index1,Index2,..."]}
 tiedParams = {
+    "ACTOR_EN_DOOR": {
+        1: ["0080", "Flag", "1"],
+        2: ["0280", "Property", "1"]
+    },
     "ACTOR_EN_WALLMAS": {
         1: ["0002", "Flag", "1"],
     },
@@ -27,13 +40,14 @@ tiedParams = {
     },
     "ACTOR_BG_MIZU_MOVEBG": {
         1: ["7000", "Property,Property,Property", "1,2,3"],
+        2: ["4000,5000,6000", "Flag", "1"]
     },
     "ACTOR_EN_WOOD02": {
         1: ["0000,0001,0002,0003,0004,0005,0006,0007,0008,0009,000A", "Property", "3"],
     },
     "ACTOR_EN_TRAP": {
-        1: ["0000", "Property,Property,Property,Property", "2,3,4,5"],
-        2: ["0010,0020", "Property", "1"],
+        1: ["0000", "Bool,Bool,Bool,Bool", "2,3,4,5"],
+        2: ["0000,0020", "Property", "1"],
     },
     "ACTOR_DOOR_ANA": {
         1: [ "0000", "Property", "2"],
@@ -46,8 +60,11 @@ tiedParams = {
         1: ["0001", "Flag", "1"],
     },
     "ACTOR_EN_WONDER_ITEM": {
-        1: ["1800", "Property", "1"],
-        2: ["1000", "Property", "2"],
+        1: ["0000,2800", "Property", "6"],
+        2: ["0800,3000", "Property", "5"],
+        3: ["1000,4800", "Property", "3"],
+        4: ["1800", "Property", "4"],
+        5: ["0000,1000,1800,2800,4800", "Property", "2"],
     },
     "ACTOR_OBJ_SWITCH": {
         1: ["0000,0001", "Bool,Bool", "2,3"],
@@ -62,6 +79,15 @@ tiedParams = {
     },
     "ACTOR_BG_SPOT01_OBJECTS2": {
         1: ["0003", "Property", "1"],
+    },
+    "ACTOR_DEMO_EFFECT": {
+        1: ["0012", "Bool", "1"],
+    },
+    "ACTOR_EN_RD": {
+        1: ["0000", "Property", "2"],
+    },
+    "ACTOR_EN_ISHI": {
+        1: ["0000", "Property,Property", "3,4"],
     },
 }
 
@@ -1359,7 +1385,7 @@ categories = {
     "2": "ACTORCAT_PLAYER",
     "3": "ACTORCAT_EXPLOSIVE",
     "4": "ACTORCAT_NPC",
-    "5": "ACTORCAT_ENNEMY",
+    "5": "ACTORCAT_ENEMY",
     "6": "ACTORCAT_PROP",
     "7": "ACTORCAT_ITEMACTION",
     "8": "ACTORCAT_MISC",
