@@ -11,7 +11,7 @@ except:
 try:
     tree = ET.parse('./ActorNames.xml')
 except:
-    print("ERROR: File 'ActorNames.xml' is missing. You can find it in SO's (1.28) XML folder.")
+    print("ERROR: File 'ActorNames.xml' is missing. You can find it in SO's (1.30) XML folder.")
     exit()
 
 root = tree.getroot()
@@ -157,7 +157,7 @@ def genElem(actorNode, string, attr, attr2, name, target, value, j):
                 if elem.get('Type') is None:
                     elem.set('Type', attr2)
                     if propTarget != 'None': elem.set('Target', propTarget)
-                    if string == 'Switch Flag ' and elem.get('Flag') == propValue: elem.text = propName
+                    if string.endswith('Flag '): elem.set('Name', propName)
                 if string.startswith('Switch '):
                     elem.set('Index', f'{i}')
                     i += 1
