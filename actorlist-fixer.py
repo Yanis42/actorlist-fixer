@@ -43,6 +43,7 @@ for i in range(len(actorID)):
             actorNode.set('Name', (actorNode.get('Name') + ' - ' + actorNode.get('ID').replace('ACTOR_','')))
 
 # Process Object IDs
+# TODO: fix process time for objects
 print("INFO: Processing Object IDs...")
 
 i = j = k = 0

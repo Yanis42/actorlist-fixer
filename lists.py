@@ -14,6 +14,11 @@ checkBox = {
     "ACTOR_EN_ISHI": "3",
     "ACTOR_OBJ_LIGHTSWITCH": "1",
     "ACTOR_OBJ_MAKEOSHIHIKI": "1,2,5",
+    "ACTOR_BG_BOMBWALL": "1",
+    "ACTOR_EN_BROB": "1",
+    "ACTOR_OBJ_LIFT": "1",
+    "ACTOR_OBJ_HSBLOCK": "2",
+    "ACTOR_OBJ_WARP2BLOCK": "2",
 }
 
 # Used to draw the relevant props on Blender
@@ -88,6 +93,9 @@ tiedParams = {
     },
     "ACTOR_EN_ISHI": {
         1: ["0000", "Property,Property", "3,4"],
+    },
+    "ACTOR_EN_RIVER_SOUND": {
+        1: ["0000,0004,0005", "Property", "1"],
     },
 }
 
