@@ -19,6 +19,17 @@ checkBox = {
     "ACTOR_OBJ_LIFT": "1",
     "ACTOR_OBJ_HSBLOCK": "1",
     "ACTOR_OBJ_WARP2BLOCK": "2",
+    "ACTOR_EN_SW": "1",
+    "ACTOR_OBJ_OSHIHIKI": "1",
+    "ACTOR_DOOR_ANA": "1",
+    "ACTOR_EN_OKUTA": "2",
+    "ACTOR_EN_REEBA": "1",
+    "ACTOR_EN_BUTTE": "1",
+    "ACTOR_ELF_MSG2": "2",
+    "ACTOR_END_TITLE": "1",
+    "ACTOR_EN_FLOORMAS": "1",
+    "ACTOR_OBJ_MAKEKINSUTA": "1",
+    "ACTOR_BG_SPOT18_SHUTTER": "1",
 }
 
 # Used to draw the relevant props on Blender
@@ -45,7 +56,7 @@ tiedParams = {
     },
     "ACTOR_BG_MIZU_MOVEBG": {
         1: ["7000", "Property,Property,Property", "1,2,3"],
-        2: ["4000,5000,6000", "Flag", "1"]
+        2: ["4000,5000,6000", "Flag", "1"],
     },
     "ACTOR_EN_WOOD02": {
         1: ["0000,0001,0002,0003,0004,0005,0006,0007,0008,0009,000A", "Property", "3"],
@@ -55,8 +66,7 @@ tiedParams = {
         2: ["0000,0020", "Property", "1"],
     },
     "ACTOR_DOOR_ANA": {
-        1: [ "0000", "Property", "2"],
-        2: [ "1000", "Property", "3"],
+        1: [ "0000", "Property", "1"],
     },
     "ACTOR_BG_HAKA_MEGANEBG": {
         1: ["0003", "Flag", "1"],
@@ -65,11 +75,9 @@ tiedParams = {
         1: ["0001", "Flag", "1"],
     },
     "ACTOR_EN_WONDER_ITEM": {
-        1: ["0000,2800", "Property", "6"],
-        2: ["0800,3000", "Property", "5"],
-        3: ["1000,4800", "Property", "3"],
-        4: ["1800", "Property", "4"],
-        5: ["0000,1000,1800,2800,4800", "Property", "2"],
+        1: ["1000,4800", "Property", "1"],
+        2: ["0800,3000", "Property", "2"],
+        3: ["0000,2800", "Property", "3"],
     },
     "ACTOR_OBJ_SWITCH": {
         1: ["0000,0001", "Bool,Bool", "2,3"],
@@ -96,6 +104,66 @@ tiedParams = {
     },
     "ACTOR_EN_RIVER_SOUND": {
         1: ["0000,0004,0005", "Property", "1"],
+    },
+    "ACTOR_EN_SW": {
+        1: ["8000", "Bool", "1"],
+    },
+    "ACTOR_EN_OKARINA_TAG": {
+        1: ["1C00", "Property", "1"],
+    },
+
+    "ACTOR_EN_RU2": {
+        1: ["0004", "Flag", "1"],
+    },
+}
+
+# Format: ACTOR_ID: {[Param index, param tag, [actions], [values]]}
+actionList = {
+    "ACTOR_DEMO_EFFECT": {
+        1: ["Light Color", "Property", "0xF000", "0012", "1", "Params", 
+            ["Red Light", "Blue Light", "Green Light", "Orange Light", "Yellow Light", "Purple Light", "Green Light 2"],
+            ["0x00", "0x01", "0x02", "0x03", "0x04", "0x05", "0x06"]],
+    },
+    "ACTOR_EN_RD": {
+        # TODO: get the proper actions
+        1: ["Action", "Property", "0x00FF", "0000", "1", "Params", ["Standing", "Crouching", "Invisible"], ["0x00", "0x02", "0x03"]],
+        2: ["Action", "Property", "0x00FF", "0080", "1", "Params", ["Standing", "Lying Down, floats into standing position"], ["0xFE", "0xFD"]],
+    },
+    "ACTOR_EN_SW": {
+        1: ["Location", "Property", "0x1F00", "8000", "1", "Params",
+            ["Deku Tree", "Dodongo's Cavern", "Jabu-Jabu's Belly", "Forest Temple", "Fire Temple", "Water Temple", "Spirit Temple", "Shadow Temple", "Bottom of the Well", "Ice Cavern", "Hyrule Field", "Lon-Lon Ranch", "Kokiri Forest", "Lost Woods/SFM", "Castle Town/Ganon's Castle", "DMT/Goron City", "Kakariko Village", "Zora's Fountain/River", "Lake Hylia", "Gerudo Valley", "Gerudo Fortress", "Desert Colossus/Wasteland"],
+            ["0x01", "0x02", "0x03", "0x04", "0x05", "0x06", "0x07", "0x08", "0x09", "0x0A", "0x0B", "0x0C", "0x0D", "0x0E", "0x0F", "0x10", "0x11", "0x12", "0x13", "0x14", "0x15", "0x16"]],
+    },
+    "ACTOR_BG_SPOT08_ICEBLOCK": {
+        1: ["Action", "Property", "0x000F", "0000", "1", "Params", ["Floating", "Floating (?)", "Floating, rotating", "Orbiting Twins", "Static"], ["0x00", "0x01", "0x02", "0x03", "0x04"]],
+        2: ["Size", "Property", "0x00F0", "0080", "2", "Params", ["Large", "Medium", "Small"], ["0x00", "0x01", "0x02"]],
+    },
+    "ACTOR_OBJ_OSHIHIKI": {
+        1: ["Color (Scene Based)", "Property", "0x00C0", "0000,0001,0002,0003", "1", "Params",
+            ["Deku Tree", "Dodongo's Cavern", "Forest Temple", "Fire Temple", "Water Temple", "Spirit Temple", "Shadow Temple", "Ganon's Castle", "Gerudo Training Grounds"],
+            ["0x00", "0x01", "0x02", "0x03", "0x04", "0x05", "0x06", "0x07", "0x08", "0x09"]],
+    },
+    "ACTOR_EN_WONDER_ITEM": {
+        1: ["Collectible Type", "Property", "0x07C0", "0000,1000,1800,2800,4800", "1", "Params",
+            ["Deku Nuts", "Heart Piece", "Large Magic Jar", "Small Magic Jar", "Recovery Heart", "Arrows (5)", "Arrows (10)", "Arrows (30)", "Green Rupee", "Blue Rupee", "Red Rupee", "Flex Drop", "Random Drop"],
+            ["0x00", "0x01", "0x02", "0x03", "0x04", "0x05", "0x06", "0x07", "0x08", "0x09", "0x0A", "0x0B", "0x0C"]],
+        2: ["Spawn Trigger", "Property", "0x00FF", "1800", "3", "ZRot",
+            ["Sword Slash", "Arrows", "Hammer", "Explosions", "Slingshot", "Boomerang", "Hookshot"],
+            ["0x00", "0x01", "0x02", "0x03", "0x04", "0x05", "0x06"]],
+    },
+    "ACTOR_EN_OKARINA_TAG": {
+        # TODO: Get more info on scarecrow shenanigans
+        1: ["Song to Play", "Property", "0x03C0", "1C00", "1", "Params",
+            ["Saria's Song", "Epona's Song", "Zelda's Lullaby", "Sun's Song", "Song of Time", "Song of Storms"],
+            ["0x00", "0x01", "0x02", "0x03", "0x04", "0x05"]],
+    },
+    "ACTOR_DOOR_ANA": {
+        1: ["Destination", "Property", "0x000F", "0000,0100,0200", "1", "ZRot",
+            ["Generic Grotto", "Big Skulltula", "Heart Piece Scrub", "Two Redeads", "Three Deku Salescrubs", "Webbed", "Octorock", "Two Deku Salescrubs (Deku Nut Upgrade)", "Two Wolfos", "Bombable Walls", "Two Deku Salescrubs (Green Potion)", "Tektite", "Forest Stage", "Cow"],
+            ["0x00", "0x01", "0x02", "0x03", "0x04", "0x05", "0x06", "0x07", "0x08", "0x09", "0x0A", "0x0B", "0x0C", "0x0D"]],
+    },
+    "ACTOR_OBJ_TSUBO": {
+        1: ["Object Bank", "Property", "0x0100", "", "1", "Params", ["Dungeon Keep", "Object Tsubo"], ["0x00", "0x01"]],
     },
 }
 
@@ -1401,6 +1469,101 @@ categories = {
     "10": "ACTORCAT_DOOR",
     "11": "ACTORCAT_CHEST"
 }
+
+ootElfMsgMessages = [
+    ("What’s that?", "0x00"),
+    ("Look, look, LINK! You can see down below this web using C-Up!", "0x01"),
+    ("Look at this wall! The vines growing on it give it a rough surface... Maybe you can climb it, LINK!", "0x02"),
+    ("You can open a door by standing in front of it and pressing A. Pay attention to what the Action Icon says. That’s the blue icon at the top of the screen!", "0x03"),
+    ("Look! Something is hanging up there! It looks like an old ladder!", "0x04"),
+    ("Hey... isn’t that the same design that’s on the Door of Time?", "0x05"),
+    ("It looks like that torch was burning not too long ago...", "0x06"),
+    ("From here on, we’ll be going through some narrow passages! If you take it slow, maybe you can sneak up on some enemies.", "0x07"),
+    ("Stand next to this block and grab hold of it with A. While holding A, you can push or pull it. If you stand next to the block and press A while pressing the control stick towards the block, you can climb on top of it. Pay attention to what the Action Icon says!", "0x08"),
+    ("After you get into the water, if you hold down A, you can dive! I bet there are some interesting things underwater!", "0x0C"),
+    ("Wow! Look at all those Bomb Flowers! Is there any way you can set them all off at once?", "0x14"),
+    ("It looks like there are many lava pits around here, so watch your step!", "0x15"),
+    ("With that switch on, the moving platform goes even higher. Now you can quickly reach the second floor!", "0x16"),
+    ("You never know what will be around the corner in these narrow paths... Use Z Targeting to always look in the proper direction. This is a useful technique, isn’t it?", "0x19"),
+    ("LINK, what are you looking at?", "0x1F"),
+    ("The Desert Colossus’s face... it sure looks evil!", "0x24"),
+    ("I can hear the spirits whispering in this room... “Look for the eye of truth...” That’s what they’re saying!", "0x26"),
+    ("Here... I can hear the spirits whispering in this room... “Those who have sacred feet should let the wind guide them. Then, they will be lead to the hidden path.” That’s what they are saying!", "0x28"),
+    ("This wall... it says something here... “Danger above...” That’s what it says.", "0x29"),
+    ("This wall... it says something here... “Danger below...” That’s what it says.", "0x2A"),
+    ("The water flowing out of this statue is flooding the entire floor.", "0x2B"),
+    ("Watch out, LINK! Electricity is running through this green slimy thing!", "0x2F"),
+    ("Watch out, LINK! Electricity is running through this red slimy thing!", "0x31"),
+    ("Watch out, LINK! Electricity is running through this blue slimy thing!", "0x32"),
+    ("This switch... It doesn't look like you can press it down with your weight alone, LINK...", "0x33"),
+    ("The red slimy thing is gone! That must be because you cut the red tail! Will that work with the other ones too?", "0x37"),
+    ("There’s a switch beyond this wall!", "0x39"),
+    ("It looks like there is something up there on top of the platform!", "0x3A"),
+    ("WHAAAT!? Look at all those flags! Can you figure out which ones are real? //Unused?", "0x3D"),
+    ("The Great Deku Tree has summoned you! Please come with me!", "0x40"),
+    ("C'mon! Be brave! Let's go into the Deku Tree!", "0x41"),
+    ("The Great Deku Tree wanted us to go visit the princess at Hyrule Castle... Shouldn’t we get going?", "0x42"),
+    ("The girl from the ranch asked us to find her father... I wonder where he is?", "0x43"),
+    ("I wonder where we'll find the princess in this big old castle?", "0x44"),
+    ("What would Saria say if we told her we’re going to save Hyrule?", "0x45"),
+    ("Impa said that the Spiritual Stone of Fire is somewhere on Death Mountain.", "0x46"),
+    ("Let’s go inside the Dodongo's Cavern using a Bomb Flower!", "0x47"),
+    ("Darunia said that a fairy lives on top of Death Mountain, didn’t he?", "0x48"),
+    ("I wonder if Saria knows anything about the other Spiritual Stone?", "0x49"),
+    ("It seems Princess Ruto somehow got inside Jabu-Jabu's belly...", "0x4A"),
+    ("You collected three Spiritual Stones! Let’s go back to Hyrule Castle!", "0x4B"),
+    ("Those people on the white horse... they were Zelda and Impa, weren't they? It looked like they threw something into the moat!", "0x4C"),
+    ("Let’s go check inside the Temple of Time.", "0x4D"),
+    ("Should we believe what Sheik said and go to Kakariko Village?", "0x4E"),
+    ("I wonder what’s going on in the forest right now... I’m worried about Saria, too!", "0x50"),
+    ("That cloud over Death Mountain... there is something strange about it...", "0x51"),
+    ("An arctic wind is blowing from Zora's River... do you feel it?", "0x52"),
+    ("Those Iron Boots look like they weigh a ton! If you wear those boots, you may be able to walk at the bottom of the lake.", "0x53"),
+    ("Let’s look for someone who might know about the other Sages!", "0x54"),
+    ("That monster! It came out of the well in the village! Let’s go check out the well!", "0x55"),
+    ("I wonder who built the Spirit Temple, and for what purpose?", "0x56"),
+    ("Have you ever played the Nocturne of Shadow that Sheik taught you?", "0x57"),
+    ("The desert... that is where Ganondorf the Evil King was born. If we go there, we might find something...", "0x58"),
+    ("Equip the Silver Gauntlets and try to move things you couldn't budge before!", "0x5A"),
+    ("The one who is waiting for us at the Temple of Time...it could be...", "0x5B"),
+    ("We have to save Princess Zelda from her imprisonment in Ganon's Castle!", "0x5C"),
+    ("LINK, try to keep moving!!", "0x5F"),
+    ("I don’t mind talking to you using the Ocarina’s magic, but I’d really like to talk to you face-to-face!", "0x60"),
+    ("The forest is connected to many different places! If you can hear my song, you must be near somewhere that is connected to the forest!", "0x61"),
+    ("I was so happy to hear that Mr. Darunia loved my song so much! I was even happier to find out I helped out on your quest, LINK! Tee hee hee!", "0x62"),
+    ("Are you collecting Spiritual Stones? You have one more to find? You mean the Spiritual Stone of Water, don’t you? The Great Deku Tree once told me that King Zora, ruler of Zora’s Domain, has it...", "0x63"),
+    ("Are you collecting Spiritual Stones? You have one more to find? You mean the Spiritual Stone of Fire, don’t you? The Great Deku Tree once told me that Mr. Darunia of the Gorons has it...", "0x64"),
+    ("LINK... I don’t know what it is... I have this feeling of dread... The Castle... Yes, something bad is happening at the Castle!", "0x65"),
+    ("What? Your ocarina sounds... different somehow... Have you been practicing a lot, LINK?", "0x66"),
+    ("Are you looking for a temple? A mysterious bird once told me... “Eyes that can see through darkness will open in a storm.” Do you have any idea what he meant by this?", "0x67"),
+    ("Where are you, LINK? Are you looking for a temple? I once heard a mysterious bird say... “Go, young man. Go to the Desert Goddess with an ocarina.” Do you have any idea what he meant by this?", "0x68"),
+    ("Did you find all the temples yet?", "0x69"),
+    ("Great! You’re safe! I knew I would hear from you again! I’m in the Forest Temple! The forest spirits were calling for help, so I went to check it out... But it’s full of evil monsters! Help me, LINK!", "0x6A"),
+    ("LINK... At first, I didn’t want to become the Sage of the Forest... But I’m glad now. Because I’m helping you save Hyrule, LINK! Yes, I am!", "0x6B"),
+    ("If all six Sages come together, we can imprison Ganondorf, the King of Evil, in the Sacred Realm. But in order to make a perfect seal, we need the seventh Sage. Someone you know must be that Sage, LINK... From now on, you must travel between past and future to awaken the remaining Sages! Keep up the good work, LINK!", "0x6C"),
+    ("We, the Six Sages, are channeling our power to you! The destiny of Hyrule depends upon you!", "0x6D"),
+    ("I can hear a voice from / somewhere... / It's saying: / &quot;Collect five silver Rupees...&quot;", "0x80"),
+    ("This wall...it's saying something! / It says: / If you want to see a ferry to the / other world, come here...", "0x81"),
+    ("If you want to ride that boat, be / careful! It looks very old... Who / knows when it might sink?", "0x83"),
+    ("There is a door over here... Is / there any way to get across?", "0x84"),
+    ("That red ice...it's so weird!", "0x86"),
+    ("This blue fire...it doesn't seem / natural. Maybe you can use it for / something?", "0x89"),
+    ("The fires on the torches are gone. / Seems like the ghosts took them / away!", "0x8C"),
+    ("Look, Link! A torch / is lit! That's because / you beat a ghost, isn't it?!", "0x8D"),
+    ("There are arrows painted on the / floor!", "0x8F"),
+    ("This corridor is all twisted!", "0x90"),
+    ("Watch for the shadows of / monsters that hang from the / ceiling.", "0x91"),
+    ("There's a treasure chest here.", "0x92"),
+    ("This...this is the same torch we / saw at the entrance to the temple, / isn't it?", "0x94"),
+    ("This torch is lit...that means...", "0x95"),
+    ("This switch is frozen!", "0x97"),
+    ("Link, watch out! / The ceiling is falling down!", "0x98"),
+    ("Link, I hear Goron / voices down below.", "0xA3"),
+    ("You can see down from here... / Isn't that the room where we saw / Darunia?", "0xA5"),
+    ("This statue...haven't we seen it / somewhere before?", "0xA7"),
+    ("This switch looks rusted.", "0xA9"),
+    ("Link! Be careful! / Don't get swallowed by the / vortexes!", "0xAB"),
+]
 
 ootEnWonderItemDrop = [
 	("Deku Nuts", "0x00"),

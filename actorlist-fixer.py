@@ -3,7 +3,7 @@ from sys import exit
 
 try:
     from lists import actors as actorID, objects as objectID, categories as actorCat, objectsNames as objectNames, checkBox, \
-        ootEnWonderItemDrop as wonderList, ootEnItem00Drop as item00List, ootEnBoxContent as chestList, tiedParams
+        ootElfMsgMessages, ootEnItem00Drop as item00List, ootEnBoxContent as chestList, tiedParams, actionList
 except:
     print("ERROR: File 'lists.py' is missing. You can find it on Github: https://github.com/Yanis42/actorlist-fixer")
     exit()
@@ -155,7 +155,7 @@ def genElem(actorNode, string, attr, attr2, name, target, value, j):
             ET.SubElement(actorNode, attr, { 'Mask' : propValue } )
             for elem in actorNode.iter(attr):
                 if elem.get('Type') is None:
-                    elem.set('Type', attr2)
+                    if attr2 is not None: elem.set('Type', attr2)
                     if propTarget != 'None': elem.set('Target', propTarget)
                     if string.endswith('Flag '): elem.set('Name', propName)
                 if string.startswith('Switch '):
@@ -197,7 +197,7 @@ for actorNode in root:
             elif propName == 'Collectible to Spawn': genElem(actorNode, 'Collectible to Spawn', 'Collectible', 'Drop', propName, listPropTarget[i], listProp2[i], None)
             elif propName == 'Collectible Var': genElem(actorNode, 'Collectible Var', 'Collectible', 'Drop', propName, listPropTarget[i], listProp2[i], None)
 
-            elif propName.startswith('Content'): genElem(actorNode, 'Content', 'Item', 'ChestContent', propName, listPropTarget[i], listProp2[i], None)
+            elif propName.startswith('Content'): genElem(actorNode, 'Content', 'ChestContent', None, propName, listPropTarget[i], listProp2[i], None)
 
             else: genElem(actorNode, 'Property', 'Property', 'Mask', propName, listPropTarget[i], listProp2[i], None)
 
@@ -217,7 +217,7 @@ for actorNode in root:
                 elif propName[j] == 'Collectible to Spawn': genElem(actorNode, 'Collectible to Spawn', 'Collectible', 'Drop', propName, listPropTarget[i], listProp2[i], j)
                 elif propName[j] == 'Collectible Var': genElem(actorNode, 'Collectible Var', 'Collectible', 'Drop', propName, listPropTarget[i], listProp2[i], j)
 
-                elif propName[j].startswith('Content'): genElem(actorNode, 'Content', 'Item', 'ChestContent', propName, listPropTarget[i], listProp2[i], j)                
+                elif propName[j].startswith('Content'): genElem(actorNode, 'Content', 'ChestContent', None, propName, listPropTarget[i], listProp2[i], j)
                 
                 else: genElem(actorNode, 'Property', 'Property', 'Mask', propName, listPropTarget[i], listProp2[i], j)
     i += 1
@@ -230,12 +230,25 @@ for actorNode in root:
         if elem.get('Mask') == '0xFFFF':
             elem.attrib.pop('Mask', None)
 
+    actorNodeID = actorNode.get('ID')
     for elem in actorNode:
         if elem.tag == 'Notes':
             # TODO: format the notes properly
             notes = elem.text
             actorNode.remove(elem)
             ET.SubElement(actorNode, 'Notes', {}).text = notes
+
+    for elem in actorNode:
+        if actorNodeID == 'ACTOR_EN_BOX' or \
+            actorNodeID == 'ACTOR_EN_RD' or \
+            actorNodeID == 'ACTOR_EN_SW' or \
+            actorNodeID == 'ACTOR_ELF_MSG' or \
+            actorNodeID == 'ACTOR_EN_OKARINA_TAG' or \
+            actorNodeID == 'ACTOR_OBJ_TIMEBLOCK' or \
+            actorNodeID == 'ACTOR_DOOR_ANA' or \
+            actorNodeID == 'ACTOR_OBJ_TSUBO':
+            if elem.tag == 'Notes':
+                actorNode.remove(elem)
 
     actorNode.attrib.pop('Object', None)
     actorNode.attrib.pop('Properties', None)
@@ -267,18 +280,100 @@ for actorNode in root:
                                 elem.tag = 'Bool'
 
 # Fix Indexes
+def fixIndexes():
+    for actorNode in root:
+        i = j = k = l = 1
+        for elem in actorNode:
+            if elem.tag == 'Bool':
+                elem.set('Index', f'{i}')
+                i += 1
+            elif elem.tag == 'Property':
+                elem.set('Index', f'{j}')
+                j += 1
+            elif elem.tag == 'Flag':
+                elem.set('Index', f'{k}')
+                k += 1
+            elif elem.tag == 'Collectible':
+                elem.set('Index', f'{l}')
+                l += 1
+
+fixIndexes()
+
+# Add enums
+actionKeys = list(actionList.keys())
 for actorNode in root:
-    i = j = k = 1
+    actorID = actorNode.get('ID')
+    actorHasEnum = False
+    for i in range(len(actionKeys)):
+        if actorID == actionKeys[i]:
+            listKeys = actionList[actorID].keys()
+            lenKeys = len(listKeys) + 1
+            for elem in actorNode:
+                for j in range(1, lenKeys):
+                    name = actionList[actorID][j][0]
+                    tag = actionList[actorID][j][1]
+                    mask = actionList[actorID][j][2]
+                    param = actionList[actorID][j][3]
+                    index = actionList[actorID][j][4]
+                    target = actionList[actorID][j][5]
+                    if elem.tag == tag and elem.get('Index') == index:
+                        if param != "":
+                            attrib = {'Name': name, 'Index': f'{j}', 'TiedParam': param, 'Target': target, 'Mask': mask}
+                        else:
+                            attrib = {'Name': name, 'Index': f'{j}', 'Target': target, 'Mask': mask}
+                        actorNode.append(ET.Element('Enum', attrib))
+                        actorHasEnum = True
+
+            for elem in actorNode:
+                elemIndex = elem.get('Index')
+                if elem.tag == 'Enum' and elemIndex is not None:
+                    for j in range(1, lenKeys):
+                        if elemIndex == f'{j}':
+                            index = actionList[actorID][j][4]
+                            actions = actionList[actorID][j][6]
+                            values = actionList[actorID][j][7]
+                            for k in range(len(actions)):
+                                attrib = {'Name': actions[k], 'Value': values[k]}
+                                elem.append(ET.Element('Item', attrib))
+
+            for elem in actorNode:
+                if elem.tag == 'Property' and actorHasEnum:
+                    actorNode.set('HasEnum', 'True')
+
+    if actorID == 'ACTOR_ELF_MSG' or actorID == 'ACTOR_ELF_MSG2':
+        for elem in actorNode:
+            if elem.tag == 'Property' and elem.get('Name').startswith('Message'):
+                elem.tag = 'Message'
+
+# Remove doublons
+for actorNode in root:
+    if actorNode.get('HasEnum') == 'True':
+        length = '1'
+        for elem in actorNode:
+            if elem.tag == 'Enum':
+                length = elem.get('Index')
+
+        for i in range(int(length)):
+            for elem in actorNode:
+                if elem.tag != 'Parameter':
+                    name1 = elem.get('Name')
+                    if elem.tag == 'Enum':
+                        for elem2 in actorNode:
+                            if elem2.tag != 'Enum' and elem2.tag != 'Parameter':
+                                name2 = elem2.get('Name')
+                                if name1 == name2:
+                                    actorNode.remove(elem2)
+
+fixIndexes()
+
+for actorNode in root:
     for elem in actorNode:
-        if elem.tag == 'Bool':
-            elem.set('Index', f'{i}')
-            i += 1
-        elif elem.tag == 'Property':
-            elem.set('Index', f'{j}')
-            j += 1
-        elif elem.tag == 'Flag':
-            elem.set('Index', f'{k}')
-            k += 1
+        name = elem.get('Name')
+        if elem.tag != 'Enum' and name is not None and name.startswith('Collectible') and (name.endswith('Drop') or name.endswith('Type')):
+            elem.tag = 'Collectible'
+            elem.set('Type', 'Drop')
+
+fixIndexes()
 
 # Add tied elements, used to determine which actor needs which props
 # Format: <ElemTag Index="1" Mask="0x0010" Name="Toggle" Subscribe=";1,2,3"
@@ -287,29 +382,31 @@ i = 0
 actorKeys = list(tiedParams.keys())
 for actorNode in root:
     actorID = actorNode.get('ID')
-    if i < len(actorKeys) and actorID == actorKeys[i]:
-        listKeys = tiedParams[actorID].keys()
-        for elem in actorNode:
-            for j in range(1, len(listKeys) + 1):
-                params = tiedParams[actorID][j][0]
-                tag = tiedParams[actorID][j][1]
-                index = tiedParams[actorID][j][2]
-
-                if tag.find(',') != -1:
-                    listTag = tag.split(',')
-                    listIndex = index.split(',')
-                else: 
-                    listTag = [tag]
-                    listIndex = [index]
-
+    for i in range(len(actorKeys)):
+        if actorID == actorKeys[i]:
+            listKeys = tiedParams[actorID].keys()
+            for elem in actorNode:
                 elemIndex = elem.get('Index')
-                if len(listTag) == 1 and listTag[0] == elem.tag and listIndex[0] == elemIndex:
-                    elem.set('TiedParam', params)
-                else:
-                    for k in range(len(listTag)):
-                        if listIndex[k] == elemIndex and listTag[k] == elem.tag:
-                            elem.set('TiedParam', params)
-        i += 1
+                for j in range(1, len(listKeys) + 1):
+                    params = tiedParams[actorID][j][0]
+                    tag = tiedParams[actorID][j][1]
+                    index = tiedParams[actorID][j][2]
+
+                    if tag.find(',') != -1:
+                        listTag = tag.split(',')
+                        listIndex = index.split(',')
+                    else:
+                        listTag = [tag]
+                        listIndex = [index]
+
+                    if len(listTag) == 1 and listTag[0] == elem.tag and listIndex[0] == elemIndex:
+                        elem.set('TiedParam', params)
+                    else:
+                        for k in range(len(listTag)):
+                            if listIndex[k] == elemIndex and listTag[k] == elem.tag:
+                                elem.set('TiedParam', params)
+
+fixIndexes()
 
 # Add additional lists
 def addList(name, list):
@@ -328,7 +425,7 @@ def addList(name, list):
                     elem.set('Value', list[i][1])
                     i += 1
 
-addList('En_Wonder_Item Drops', wonderList)
+addList('Elf_Msg Message ID', ootElfMsgMessages)
 addList('Collectibles', item00List)
 addList('Chest Content', chestList)
 
