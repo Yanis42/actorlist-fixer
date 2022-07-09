@@ -1,5 +1,6 @@
 import xml.etree.ElementTree as ET, xml.dom.minidom as MD
 from sys import exit
+from collections import OrderedDict
 
 try:
     from lists import actors as actorID, objects as objectID, categories as actorCat, objectsNames as objectNames, checkBox, \
@@ -40,7 +41,8 @@ for i in range(len(actorID)):
     for actorNode in root:
         if actorNode.get('Key') == idNumber:
             actorNode.set('ID', actorID.get(idNumber))
-            actorNode.set('Name', (actorNode.get('Name') + ' - ' + actorNode.get('ID').replace('ACTOR_','')))
+            actorNode.set('Name', actorNode.get('Name'))
+            actorNode.set('Key', (actorNode.get('ID').lower().replace('actor_', '')))
 
 # Process Object IDs
 # TODO: fix process time for objects
@@ -55,7 +57,7 @@ for i in range(len(objectID)):
         tmp = actorNode.get('Object')
         
         if tmp == idNumber:
-            actorNode.set('ObjectID', objectID.get(idNumber))
+            actorNode.set('ObjectKey', objectID.get(idNumber).lower().replace('object_', 'obj_'))
             # actorNode.set('ObjectName', objectNames.get(objectID.get(idNumber)))
 
         elif tmp is not None and tmp.find(',') != -1:
@@ -176,8 +178,48 @@ def genElem(actorNode, string, attr, attr2, name, target, value, j):
                     k += 1
 
 print("INFO: Creating new sub-elements...")
+# Variable -> Parameter, Var -> Params
 for actorNode in root:
-    # Generate the sub-elements
+    for elem in actorNode.iter('Variable'):
+        elem.tag = 'Parameter'
+        elem.set('Params', elem.get('Var'))
+        elem.attrib.pop('Var', None)
+        if elem.get('Mask') == '0xFFFF':
+            elem.attrib.pop('Mask', None)
+
+# Add <Type>
+for actorNode in root:
+    for elem in actorNode:
+        if elem.tag == 'Parameter':
+            mask = elem.get('Mask')
+            dict = { 'Index': "1" }
+            if mask is not None:
+                dict |= { 'Mask': mask }
+    for elem in actorNode:
+        if elem.tag == 'Parameter':
+            ET.SubElement(actorNode, 'Type', dict)
+            break
+
+# Add <Item> to <Type>
+for actorNode in root:
+    for elem in actorNode:
+        if elem.tag == 'Parameter':
+            params = elem.get('Params')
+            dict = {}
+            if params is not None:
+                dict = { 'Params': params }
+            for a in root:
+                for e in a:
+                    if a.get('ID') == actorNode.get('ID') and e.tag == 'Type':
+                        ET.SubElement(e, 'Item', dict).text = elem.text
+
+# Remove <Parameter>
+for actorNode in root:
+    for elem in actorNode.findall('Parameter'):
+        actorNode.remove(elem)
+
+# Generate the sub-elements
+for actorNode in root:
     propName = listPropNames[i]
     isNoneHere = 0 # Need this because of the for loop when handling lists
 
@@ -223,13 +265,6 @@ for actorNode in root:
     i += 1
 
     # Clean-Up
-    for elem in actorNode.iter('Variable'):
-        elem.tag = 'Parameter'
-        elem.set('Params', elem.get('Var'))
-        elem.attrib.pop('Var', None)
-        if elem.get('Mask') == '0xFFFF':
-            elem.attrib.pop('Mask', None)
-
     actorNodeID = actorNode.get('ID')
     for elem in actorNode:
         if elem.tag == 'Notes':
@@ -428,6 +463,13 @@ def addList(name, list):
 addList('Elf_Msg Message ID', ootElfMsgMessages)
 addList('Collectibles', item00List)
 addList('Chest Content', chestList)
+
+# sorting attributes
+for actorNode in root:
+    if actorNode.tag == 'Actor':
+        actorNode.attrib = OrderedDict(sorted(actorNode.attrib.items()))
+        for elem in actorNode:
+            elem.attrib = OrderedDict(sorted(elem.attrib.items()))
 
 # --- Write the new file ---
 print("INFO: Writing the file...")
